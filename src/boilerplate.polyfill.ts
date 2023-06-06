@@ -23,13 +23,21 @@ function groupRows<T>(rawResults: T[], alias: Alias, driver: Driver): Map<string
     if (alias.metadata.tableType === 'view') {
         keys.push(
             ...alias.metadata.columns.map((column) =>
-                DriverUtils.buildAlias(driver, alias.name, column.databaseName)
+                DriverUtils.buildAlias(
+                    driver,
+                    alias.name as { shorten?: boolean | undefined; joiner?: string | undefined },
+                    column.databaseName
+                )
             )
         );
     } else {
         keys.push(
             ...alias.metadata.primaryColumns.map((column) =>
-                DriverUtils.buildAlias(driver, alias.name, column.databaseName)
+                DriverUtils.buildAlias(
+                    driver,
+                    alias.name as { shorten?: boolean | undefined; joiner?: string | undefined },
+                    column.databaseName
+                )
             )
         );
     }
