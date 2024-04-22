@@ -177,7 +177,12 @@ SelectQueryBuilder.prototype.paginate = async function (
     const group = groupRows(raw, alias, this.connection.driver);
 
     const keys = alias.metadata.primaryColumns.map((column) =>
-        DriverUtils.buildAlias(this.connection.driver, alias.name, column.databaseName)
+        // DriverUtils.buildAlias(this.connection.driver, alias.name , column.databaseName)
+        DriverUtils.buildAlias(
+            this.connection.driver,
+            alias.name as { shorten?: boolean | undefined; joiner?: string | undefined },
+            column.databaseName
+        )
     );
 
     for (const rawValue of raw) {

@@ -56,10 +56,9 @@ export class UsersController {
         description: 'Create new users'
     })
     @ApiOperation({ summary: 'Create new users' })
-    async createUsersFromSheet() {
-        return this.usersService.createUsersFromSheet();
-    }
-
+    // async createUsersFromSheet() {
+    //     return this.usersService.createUsersFromSheet();
+    // }
     @Get()
     @Auth([UserRole.ADMIN])
     @HttpCode(HttpStatus.OK)

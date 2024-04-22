@@ -87,71 +87,71 @@ export class UsersService {
         return Promise.all(promiseSavedUsers);
     }
 
-    async createUsersFromSheet() {
-        const workbook = new Excel.Workbook();
-        const filePath = path.resolve(__dirname, 'users.xlsx');
+    // async createUsersFromSheet() {
+    //     const workbook = new Excel.Workbook();
+    //     const filePath = path.resolve(__dirname, 'users.xlsx');
 
-        await workbook.xlsx.readFile(filePath);
+    //     await workbook.xlsx.readFile(filePath);
 
-        const worksheet = workbook.getWorksheet('Sheet1');
-        let rowStartIndex = 2;
-        const numberOfRows = worksheet.rowCount - 1;
+    //     const worksheet = workbook.getWorksheet('Sheet1');
+    //     let rowStartIndex = 2;
+    //     const numberOfRows = worksheet.rowCount - 1;
 
-        const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
+    //     const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
 
-        const userInfos: Array<{ password?: string; status?: AccountStatus }> = [];
+    //     const userInfos: Array<{ password?: string; status?: AccountStatus }> = [];
 
-        const promiseSavedUsers = rows.map(async (row) => {
-            if (this.getCellValue(row, 4)) {
-                userInfos.push({});
+    //     const promiseSavedUsers = rows.map(async (row) => {
+    //         if (this.getCellValue(row, 4)) {
+    //             userInfos.push({});
 
-                return null;
-            }
+    //             return null;
+    //         }
 
-            const username = this.getCellValue(row, 2);
+    //         const username = this.getCellValue(row, 2);
 
-            const hasSavedUser = await this.findUserByIdOrUsername({ username });
+    //         const hasSavedUser = await this.findUserByIdOrUsername({ username });
 
-            if (hasSavedUser) {
-                userInfos.push({ status: AccountStatus.CONFLICT });
+    //         if (hasSavedUser) {
+    //             userInfos.push({ status: AccountStatus.CONFLICT });
 
-                return null;
-            }
+    //             return null;
+    //         }
 
-            const password = defaultPassword;
+    //         const password = defaultPassword;
 
-            userInfos.push({ password, status: AccountStatus.CREATED });
+    //         userInfos.push({ password, status: AccountStatus.CREATED });
 
-            const userEntity = this.userRepository.create({
-                username,
-                password: generateHash(password),
-                avatarUrl: faker.image.avatar()
-            });
+    //         const userEntity = this.userRepository.create({
+    //             username,
+    //             password: generateHash(password),
+    //             avatarUrl: faker.image.avatar()
+    //         });
 
-            return this.userRepository.save(userEntity);
-        });
+    //         return this.userRepository.save(userEntity);
+    //     });
 
-        await Promise.all(promiseSavedUsers);
+    //     await Promise.all(promiseSavedUsers);
 
-        for (const user of userInfos) {
-            const row = worksheet.getRow(rowStartIndex);
+    //     for (const user of userInfos) {
+    //         const row = worksheet.getRow(rowStartIndex);
 
-            if (user.password) {
-                row.getCell(3).value = user.password;
-            }
+    //         if (user.password) {
+    //             row.getCell(3).value = user.password;
+    //         }
 
-            if (user.status) {
-                row.getCell(4).value = user.status;
-            }
+    //         if (user.status) {
+    //             row.getCell(4).value = user.status;
+    //         }
 
-            row.commit();
-            rowStartIndex++;
-        }
+    //         row.commit();
+    //         rowStartIndex++;
+    //     }
 
-        await workbook.xlsx.writeFile(filePath);
+    //     await workbook.xlsx.writeFile(filePath);
 
-        return new ResponseDto({ message: 'Create users successfully' });
-    }
+    //     return new ResponseDto({ message: 'Create users successfully' });
+    // }
 
     getCellValue(row: Excel.Row, cellIndex: number) {
         const cell = row.getCell(cellIndex);
